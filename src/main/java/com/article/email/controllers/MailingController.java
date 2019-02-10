@@ -6,6 +6,8 @@ import com.article.email.sender.MailSender;
 import java.io.IOException;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MailingController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MailingController.class);
+    
     @Autowired
     private MailSender mailSender;
 
@@ -37,7 +41,7 @@ public class MailingController {
             mailSender.sendMail(mailData.getMessageSubject(),
                     mailData.getMessageContent(), address.toString());
         } else {
-            System.out.println("INFO: No mails");
+            logger.info("No mails");
         }
 
         return mailData;

@@ -3,11 +3,10 @@ package com.article.email.services;
 import com.article.email.model.ArticleDto;
 import com.article.email.model.UserDto;
 import com.article.email.sender.MailSender;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class UserDistributionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserDistributionService.class);
 
     @Value("${user.uri}")
     private String userUri;
@@ -44,7 +45,7 @@ public class UserDistributionService {
                 new MediaType[]{MediaType.APPLICATION_JSON}));
 
         this.entity = new HttpEntity<>(this.headers);
-        
+
         this.rest = new RestTemplate();
     }
 
@@ -73,13 +74,13 @@ public class UserDistributionService {
                         String subject = "Random article";
                         String content = "You can read this article by name " + art.getName();
                         mailSender.sendMail(subject, content, address.toString());
-                        System.out.println(address.toString());
+                        logger.info("Sended to " + address.toString());
                     } else {
-                        System.out.println("No article");
+                        logger.warn("No article");
                     }
                 }//end if
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                logger.error(e.getMessage());
                 e.printStackTrace();
             }
         }//end while
